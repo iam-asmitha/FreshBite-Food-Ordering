@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshBite – Online Food Ordering</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <h2>🍔 FreshBite</h2>
+            <button class="hamburger" id="hamburger-btn" onclick="toggleMobileNav()" aria-label="Toggle Menu">☰</button>
+        </div>
+        <nav id="main-nav">
+            <a href="#home" onclick="closeMobileNav()">Home</a>
+            <a href="#restaurants" onclick="closeMobileNav()">Restaurants</a>
+            <a href="#menu" onclick="closeMobileNav()">Menu</a>
+            <a href="#cart-section" onclick="closeMobileNav()">Cart</a>
+            <a href="#account-section" onclick="closeMobileNav()">Account</a>
+            <a href="#about" onclick="closeMobileNav()">About Us</a>
+            <a href="#contact" onclick="closeMobileNav()">Contact Us</a>
+        </nav>
+        <div class="header-actions">
+            <button id="auth-btn" onclick="openAuthModal()">Login / Register</button>
+            <button id="header-cart-btn" onclick="showCart()">🛒 Cart (0)</button>
+        </div>
+    </header>
+
+    <!-- HOME PAGE SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <span class="badge">🔥 Free Delivery on Orders Above ₹299</span>
+            <h1>Delicious Food,<br>Delivered Fresh!</h1>
+            <p>Browse top local restaurants, filter by Veg, Non-Veg, or Vegan, apply instant coupons, and track your simulated order live.</p>
+            <div class="hero-btns">
+                <a href="#menu" class="order-btn">Explore Menu</a>
+                <a href="#restaurants" class="secondary-btn">View Restaurants</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-food-card">
+                <div class="food-art">🍕🍔🍜</div>
+                <h3>Freshly Prepared Daily</h3>
+                <p>4.8 ★ Average Customer Rating</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPECIAL OFFERS -->
+    <section id="offers">
+        <h2>Special Offers & Coupons</h2>
+        <div class="offers-grid">
+            <div class="offer-card">
+                <span class="coupon-tag">CODE: FRESH20</span>
+                <h3>20% OFF Your Meal</h3>
+                <p>Valid on orders above ₹199. Copy and apply in your cart!</p>
+                <button onclick="copyCoupon('FRESH20')">Copy Code</button>
+            </div>
+            <div class="offer-card">
+                <span class="coupon-tag">CODE: WELCOME50</span>
+                <h3>Flat ₹50 OFF</h3>
+                <p>Special welcome treat for first-time FreshBite foodies.</p>
+                <button onclick="copyCoupon('WELCOME50')">Copy Code</button>
+            </div>
+            <div class="offer-card">
+                <span class="coupon-tag">FREE DELIVERY</span>
+                <h3>Zero Delivery Fee</h3>
+                <p>Automatically unlocked when your subtotal reaches ₹299+.</p>
+                <a href="#menu" class="order-btn">Order Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESTAURANT CATEGORIES -->
+    <section id="categories">
+        <h2>Explore Categories</h2>
+        <div class="categories">
+            <div class="cat-card" onclick="quickCategoryFilter('Pizza')">🍕 Pizza</div>
+            <div class="cat-card" onclick="quickCategoryFilter('Burgers')">🍔 Burgers</div>
+            <div class="cat-card" onclick="quickCategoryFilter('Noodles')">🍜 Noodles</div>
+            <div class="cat-card" onclick="quickCategoryFilter('Desserts')">🍰 Desserts</div>
+        </div>
+    </section>
+
+    <!-- RESTAURANT LISTING -->
+    <section id="restaurants">
+        <h2>Restaurant Listing</h2>
+        <div class="filter-bar">
+            <select id="rest-cuisine-filter" onchange="renderRestaurants()">
+                <option value="All">All Cuisines</option>
+                <option value="Italian">Italian</option>
+                <option value="American">American</option>
+                <option value="Asian">Asian</option>
+                <option value="Bakery">Bakery & Desserts</option>
+            </select>
+            <select id="rest-rating-filter" onchange="renderRestaurants()">
+                <option value="0">All Ratings</option>
+                <option value="4.5">4.5 ★ & Above</option>
+                <option value="4.7">4.7 ★ & Above</option>
+            </select>
+            <select id="rest-price-filter" onchange="renderRestaurants()">
+                <option value="All">All Price Ranges</option>
+                <option value="Budget">Budget (Under ₹150)</option>
+                <option value="Mid">Mid-Range (₹150 – ₹220)</option>
+            </select>
+        </div>
+        <div id="restaurant-list" class="restaurant-list"></div>
+    </section>
+
+    <!-- FOOD MENU PAGE -->
+    <section id="menu">
+        <h2>Food Menu</h2>
+        <div class="filter-bar">
+            <input type="text" id="menu-search" placeholder="Search dishes (e.g., Pizza, Burger, Paneer, Brownie)..." oninput="renderMenu()">
+            <select id="menu-category-filter" onchange="renderMenu()">
+                <option value="All">All Categories</option>
+                <option value="Pizza">Pizza</option>
+                <option value="Burgers">Burgers</option>
+                <option value="Noodles">Noodles</option>
+                <option value="Desserts">Desserts</option>
+            </select>
+            <select id="menu-diet-filter" onchange="renderMenu()">
+                <option value="All">All Dietary Types</option>
+                <option value="Veg">Veg</option>
+                <option value="Non-Veg">Non-Veg</option>
+                <option value="Vegan">Vegan</option>
+            </select>
+        </div>
+        <div id="food-list" class="food-list"></div>
+    </section>
+
+    <!-- SHOPPING CART & CHECKOUT -->
+    <section id="cart-section">
+        <h2>Shopping Cart & Checkout</h2>
+        <div id="cart-items"></div>
+
+        <div class="coupon-bar">
+            <input type="text" id="coupon-input" placeholder="Enter coupon code (FRESH20 or WELCOME50)">
+            <button type="button" onclick="applyCoupon()">Apply Coupon</button>
+            <span id="coupon-msg"></span>
+        </div>
+
+        <div id="cart-summary" class="bill-box">
+            <p>Subtotal: <strong id="bill-subtotal">₹0</strong></p>
+            <p>Delivery Charge: <strong id="bill-delivery">₹0</strong></p>
+            <p>Coupon Discount: <strong id="bill-discount">-₹0</strong></p>
+            <p class="final-total">Total Amount: <strong id="cart-total">₹0</strong></p>
+            <div class="cart-actions">
+                <button type="button" class="secondary-btn" onclick="clearCart()">Clear Cart</button>
+                <button type="button" onclick="toggleCheckout()">Proceed to Checkout</button>
+            </div>
+        </div>
+
+        <form id="checkout-box" class="panel-box hidden" onsubmit="completeCheckout(event)">
+            <h3>Checkout Details</h3>
+            <div class="form-grid">
+                <input type="text" id="checkout-name" placeholder="Full Name" required>
+                <input type="tel" id="checkout-phone" placeholder="10-Digit Mobile Number" pattern="[0-9]{10}" required>
+                <input type="text" id="checkout-address" placeholder="Complete Delivery Address" required>
+                <select id="checkout-time" required>
+                    <option value="">Select Delivery Time</option>
+                    <option value="ASAP (25–35 mins)">ASAP (25–35 mins)</option>
+                    <option value="Today, 1:00 PM – 1:30 PM">Today, 1:00 PM – 1:30 PM</option>
+                    <option value="Today, 8:00 PM – 8:30 PM">Today, 8:00 PM – 8:30 PM</option>
+                </select>
+                <select id="checkout-payment" required>
+                    <option value="Simulated UPI Payment">Simulated UPI Payment</option>
+                    <option value="Simulated Card Gateway">Simulated Card Gateway</option>
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                </select>
+            </div>
+            <p class="sim-note">Note: Payment is simulated for internship demonstration only. Do not enter real banking credentials.</p>
+            <button type="submit">Confirm & Pay (Simulated)</button>
+        </form>
+
+        <div id="order-confirmation" class="panel-box hidden"></div>
+    </section>
+
+    <!-- USER ACCOUNT SECTION -->
+    <section id="account-section">
+        <h2>User Account & Order Tracking</h2>
+        <div class="account-grid">
+            <div class="panel-box">
+                <h3>Profile & Saved Addresses</h3>
+                <p id="account-info">Guest User — Login or register to manage your profile.</p>
+                <div class="cart-actions">
+                    <button onclick="openAuthModal()">Login / Register</button>
+                    <button id="logout-btn" class="secondary-btn hidden" onclick="logoutUser()">Logout</button>
+                </div>
+                <hr class="divider">
+                <h4>Saved Addresses</h4>
+                <ul id="saved-addresses-list" class="clean-list"></ul>
+                <form onsubmit="addSavedAddress(event)" class="inline-form">
+                    <input type="text" id="new-address-input" placeholder="Add new delivery address..." required>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+
+            <div class="panel-box">
+                <h3>My Wishlist ❤️</h3>
+                <div id="wishlist-container"></div>
+            </div>
+        </div>
+
+        <div class="panel-box" style="margin-top: 24px;">
+            <h3>Order History & Live Order Tracking (Simulated)</h3>
+            <div id="order-history-list"></div>
+        </div>
+    </section>
+
+    <!-- ABOUT US SECTION -->
+    <section id="about">
+        <h2>About Us</h2>
+        <div class="about-grid">
+            <div class="panel-box">
+                <h3>Our Story</h3>
+                <p>Founded to bring warm, restaurant-fresh meals straight to students and families, FreshBite blends curated local kitchens with transparent pricing and reliable delivery.</p>
+            </div>
+            <div class="panel-box">
+                <h3>Our Team</h3>
+                <p>Led by passionate culinary curators, frontend engineers, and local delivery partners committed to hygiene, speed, and customer happiness.</p>
+            </div>
+            <div class="panel-box">
+                <h3>Awards & Recognition</h3>
+                <p>🏆 Best Student-Friendly Food App 2025<br>⭐ 4.8/5 Customer Satisfaction Award<br>🌿 100% Eco-Friendly Packaging Partner</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT US SECTION -->
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <div class="panel-box contact-grid">
+            <div>
+                <h3>Get in Touch</h3>
+                <p><strong>Location:</strong> 42 Anna Salai, Chennai, Tamil Nadu 600002</p>
+                <p><strong>Opening Hours:</strong> Monday – Sunday, 9:00 AM – 11:00 PM</p>
+                <p><strong>Phone:</strong> +91 98765 43210</p>
+                <p><strong>Email:</strong> support@freshbite.in</p>
+            </div>
+            <form onsubmit="submitContact(event)" class="contact-form">
+                <input type="text" id="contact-name" placeholder="Your Name" required>
+                <input type="email" id="contact-email" placeholder="Your Email" required>
+                <textarea id="contact-msg" rows="3" placeholder="Write your message or feedback..." required></textarea>
+                <button type="submit">Send Message</button>
+                <p id="contact-status"></p>
+            </form>
+        </div>
+    </section>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="product-modal" class="modal hidden" onclick="closeModalOnBackdrop(event, 'product-modal')">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('product-modal')">&times;</span>
+            <div id="detail-visual" class="modal-visual"></div>
+            <span id="detail-diet" class="diet-badge"></span>
+            <h3 id="detail-title"></h3>
+            <p id="detail-price" class="price"></p>
+            <p id="detail-desc"></p>
+            <p><strong>Ingredients:</strong> <span id="detail-ingredients"></span></p>
+            <p><strong>Nutritional Info:</strong> <span id="detail-nutrition"></span></p>
+            <p><strong>Customer Reviews:</strong> <span id="detail-reviews"></span></p>
+            <div class="cart-actions">
+                <button id="detail-add-btn">Add to Cart</button>
+                <button id="detail-wish-btn" class="secondary-btn">❤️ Wishlist</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN / REGISTER MODAL -->
+    <div id="auth-modal" class="modal hidden" onclick="closeModalOnBackdrop(event, 'auth-modal')">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('auth-modal')">&times;</span>
+            <h3>Login / Register</h3>
+            <form onsubmit="handleAuthSubmit(event)" class="modal-form">
+                <input type="text" id="auth-name" placeholder="Full Name" required>
+                <input type="email" id="auth-email" placeholder="Email Address" required>
+                <input type="password" id="auth-password" placeholder="Password (min 4 chars)" minlength="4" required>
+                <button type="submit">Save & Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 FreshBite – Online Food Ordering | Internship Task WD-EC-001</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
